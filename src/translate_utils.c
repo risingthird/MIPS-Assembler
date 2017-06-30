@@ -62,6 +62,8 @@ int translate_num(long int* output, const char* str, long int lower_bound,
         return -1;
     }
     /* YOUR CODE HERE */
+    char* temp;
+    long int result = strol(str, &temp,0);
     return -1;
 }
 
