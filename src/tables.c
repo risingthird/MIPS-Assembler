@@ -92,7 +92,19 @@ static char* create_copy_of_str(const char* str) {
  */
 int add_to_table(SymbolTable* table, const char* name, uint32_t addr) {
     /* YOUR CODE HERE */
-    return -1;
+    if(addr%4) {addr_alignment_incorrect();return -1;}  // test whether the addr is word-aligned
+    if(SYMTBL_UNIQUE_NAME && (get_addr_for_symbol(table, name)!=-1)){  // test whether name exists
+        name_already_exists();
+        return -1;
+    }
+    if(table->len == table->cap){
+        table->tbl = realloc(table->tbl,(table->cap)*SCALING_FACTOR*sizeof(Symbol));
+        if(!table->tbl) allocation_failed();
+    }
+    table->tbl[table->len].name = create_copy_of_str(name);  // table is 0-indexed
+    table->tbl[table->len].addr = addr;
+    table->len = table->len + 1;
+    return 0;
 }
 
 /* Returns the address (byte offset) of the given symbol. If a symbol with name
@@ -100,6 +112,16 @@ int add_to_table(SymbolTable* table, const char* name, uint32_t addr) {
  */
 int64_t get_addr_for_symbol(SymbolTable* table, const char* name) {
     /* YOUR CODE HERE */
+    if(table){
+        int i =0;
+        int size = table->len;
+        while(i<size){
+            if(!strcmp(table->tbl[i].name, name)){    // table->tbl[i] is similar with *((table->tbl)+i)
+                return talbe->tbl[i].addr;
+            }
+            i++;
+        }
+    }
     return -1;   
 }
 
@@ -108,4 +130,7 @@ int64_t get_addr_for_symbol(SymbolTable* table, const char* name) {
  */
 void write_table(SymbolTable* table, FILE* output) {
     /* YOUR CODE HERE */
+    for(int i =0;i<table->len;i++){
+        write_symbol(output, table->tbl[i].addr, table->tbl[i].name);
+    }
 }
