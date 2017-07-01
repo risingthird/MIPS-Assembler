@@ -47,12 +47,22 @@ SymbolTable* create_table(int mode) {
     /* YOUR CODE HERE */
     SymbolTable* newTable = malloc(sizeof(SymbolTable));
     if(!newTable) allocation_failed();
+    newTable->tbl = malloc(sizeof(Symbol)*INITIAL_SIZE);
+    // set attributes in TABLE
+    if(!newTable->tbl) {free(newTable);allocation_failed();}
+    newTable->len=0;
+    newTable->cap=INITIAL_SIZE;
+    newTable->mode=mode;
+    
+    return newTable;
     
 }
 
 /* Frees the given SymbolTable and all associated memory. */
 void free_table(SymbolTable* table) {
     /* YOUR CODE HERE */
+    free(table->tbl);
+    free(table);
 }
 
 /* A suggested helper function for copying the contents of a string. */
