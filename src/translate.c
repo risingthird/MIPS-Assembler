@@ -351,8 +351,12 @@ int write_branch(uint8_t opcode, FILE* output, char** args, size_t num_args, uin
 int write_jump(uint8_t opcode, FILE* output, char** args, size_t num_args, uint32_t addr, SymbolTable* reltbl) {
     /* YOUR CODE HERE */
     if(!output || !args || reltbl || num_args!=1) return -1;
-    add_to_table(reltbl, args[0], addr);  // does it matter if we use args[0] directly?
+    char* name = args[0];
+    int temp = add_to_table(reltbl, name, addr);  // does it matter if we use args[0] directly?
+    if(temp==-1) return -1;
+    
     uint32_t instruction = 0;
+    instruction+=(opcode<<26);
     write_inst_hex(output, instruction);
     return 0;
 }
