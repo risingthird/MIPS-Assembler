@@ -71,6 +71,9 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         
         char* name3 = "ori";
         char** args3 = malloc(2*siezof(char*)); // ori $r1 $r1 imme
+        args3[0] = args[0];
+        args3[1] = "$t1";
+        long int third = ((imm<<16)>>16) & 0xffff;
         
         
         
