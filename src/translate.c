@@ -154,6 +154,7 @@ int write_rtype(uint8_t funct, FILE* output, char** args, size_t num_args) {
     instruction += (rs<<21);
     instruction += (rt<<16);
     instruction += (rd<<11);
+    instruction += funct;
     
 
     write_inst_hex(output, instruction);
@@ -169,13 +170,21 @@ int write_rtype(uint8_t funct, FILE* output, char** args, size_t num_args) {
  */
 int write_shift(uint8_t funct, FILE* output, char** args, size_t num_args) {
 	// Perhaps perform some error checking?
-
+    if (!output || !args || num_args != 3) {
+      return -1;
+    }
+    
     long int shamt;
     int rd = translate_reg(args[0]);
     int rt = translate_reg(args[1]);
     int err = translate_num(&shamt, args[2], 0, 31);
+    if(rd||rt||err) return -1;  //(rd,rt,err are -1 if failed)
 
     uint32_t instruction = 0;
+    instruction += (rd<<11);
+    instruction += (rt<<16);
+    instruction += (shamt<<6);
+    instruction += funct;
     write_inst_hex(output, instruction);
     return 0;
 }
@@ -184,7 +193,10 @@ int write_shift(uint8_t funct, FILE* output, char** args, size_t num_args) {
 
 int write_jr(uint8_t funct, FILE* output, char** args, size_t num_args) {
     // Perhaps perform some error checking?
-
+    if (!output || !args || num_args != 1) {   // jr should have only 1 argument
+      return -1;
+    }
+    
     int rs = translate_reg(args[0]);
 
     uint32_t instruction = 0;
