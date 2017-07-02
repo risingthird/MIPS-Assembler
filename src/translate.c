@@ -219,23 +219,39 @@ int write_addiu(uint8_t opcode, FILE* output, char** args, size_t num_args) {
     int rs = translate_reg(args[1]);
     int err = translate_num(&imm, args[2], INT16_MIN, INT16_MAX);
     if(rt||rs||err) return -1;
+    imm = imm & 0x0000ffff;  // take the leading 1s off
+
     
 
-
     uint32_t instruction = 0;
+    instruction += (opcode<<26);
+    instruction += (rs<<21);
+    instruction += (rt<<16);
+    instruction += imm;
     write_inst_hex(output, instruction);
     return 0;
 }
 
 int write_ori(uint8_t opcode, FILE* output, char** args, size_t num_args) {
     // Perhaps perform some error checking?
+    if (!output || !args || num_args != 3) {
+      return -1;
+    }
     
     long int imm;
     int rt = translate_reg(args[0]);
     int rs = translate_reg(args[1]);
     int err = translate_num(&imm, args[2], 0, UINT16_MAX);
+    if(rt||rs||err) return -1;
+    
+    imm = imm & 0x0000ffff;
+    
 
     uint32_t instruction = 0;
+    instruction += (opcode<<26);
+    instruction += (rs<<21);
+    instruction += (rt<<16);
+    instruction += imm;
     write_inst_hex(output, instruction);
     return 0;
 }
@@ -257,7 +273,6 @@ int write_mult_div(uint8_t funct, FILE* output, char** args, size_t num_args) {
 
 int write_mfhi_mflo(uint8_t funct, FILE* output, char** args, size_t num_args) {
     	// Perhaps perform some error checking?
-
 	int rd = translate_reg(args[0]);
 	if (rd < 0) {
 		return -1;
@@ -270,12 +285,21 @@ int write_mfhi_mflo(uint8_t funct, FILE* output, char** args, size_t num_args) {
 
 int write_lui(uint8_t opcode, FILE* output, char** args, size_t num_args) {
     // Perhaps perform some error checking?
+    if (!output || !args || num_args != 2) {
+      return -1;
+    }
     
     long int imm;
     int rt = translate_reg(args[0]);
     int err = translate_num(&imm, args[1], 0, UINT16_MAX);
+    if(rt||err) return -1;
+    
+    imm = imm & 0x0000ffff;
 
     uint32_t instruction = 0;
+    instruction+=(opcode<<26);
+    instruction+=(rt<<16);
+    instruction+=imm;
     write_inst_hex(output, instruction);
     return 0;
 }
@@ -304,20 +328,29 @@ static int can_branch_to(uint32_t src_addr, uint32_t dest_addr) {
 
 int write_branch(uint8_t opcode, FILE* output, char** args, size_t num_args, uint32_t addr, SymbolTable* symtbl) {
     // Perhaps perform some error checking?
+    if(!output||!args||!symtbl|| num_args!=3) return -1;
     
     int rs = translate_reg(args[0]);
     int rt = translate_reg(args[1]);
     int label_addr = get_addr_for_symbol(symtbl, args[2]);
+    
+    if(rs||rt||label_addr|| !can_branch_to(addr,label_addr)) return -1;
 
     //Please compute the branch offset using the MIPS rules.
-    int32_t offset = 0;
+    int32_t offset = (int32_t) ((label_addr-(addr+4))>>2);
+    offset = offset & 0x0000ffff;
     uint32_t instruction = 0;
+    instruction += (opcode<<26);
+    instruction += (rs<<21);
+    instruction += (rt<<16);
+    instruction += offset;
     write_inst_hex(output, instruction);        
     return 0;
 }
 
 int write_jump(uint8_t opcode, FILE* output, char** args, size_t num_args, uint32_t addr, SymbolTable* reltbl) {
     /* YOUR CODE HERE */
+    if(!output || !args || reltbl || num_args!=1) return -1;
     
     uint32_t instruction = 0;
     write_inst_hex(output, instruction);
