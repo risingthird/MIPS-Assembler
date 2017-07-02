@@ -142,10 +142,13 @@ int translate_inst(FILE* output, const char* name, char** args, size_t num_args,
  */
 int write_rtype(uint8_t funct, FILE* output, char** args, size_t num_args) {
     // Perhaps perform some error checking?
-
+    if(!output || !args || num_args!=3) return -1;
+    
+    
     int rd = translate_reg(args[0]);
     int rs = translate_reg(args[1]);
     int rt = translate_reg(args[2]);
+    
 
     uint32_t instruction = 0;
     write_inst_hex(output, instruction);
