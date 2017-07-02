@@ -43,7 +43,9 @@ const int TWO_POW_SEVENTEEN = 131072;    // 2^17
 unsigned write_pass_one(FILE* output, const char* name, char** args, int num_args) {
     if (strcmp(name, "li") == 0) {
         /* YOUR CODE HERE */
-        return 0;  
+        if(!output || !name || !args || num_args != 2){return 0;}
+        
+        
     } else if (strcmp(name, "push") == 0) {
         /* YOUR CODE HERE */
         return 0;  
