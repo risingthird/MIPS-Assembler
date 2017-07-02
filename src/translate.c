@@ -73,9 +73,15 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         char** args3 = malloc(2*siezof(char*)); // ori $r1 $r1 imme
         args3[0] = args[0];
         args3[1] = "$t1";
-        long int third = ((imm<<16)>>16) & 0xffff;
+        long int temp2 = ((imm<<16)>>16) & 0xffff;
+        char copy2[100];
+        sprintf(copy2,"%ld",temp2);
+        args[2] = copy2;
         
+        write_inst_string(output,name2,args2,2);
+        write_inst_string(output,name3,args3,3);
         
+        return 2;
         
     } else if (strcmp(name, "push") == 0) {
         /* YOUR CODE HERE */
