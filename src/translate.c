@@ -149,8 +149,13 @@ int write_rtype(uint8_t funct, FILE* output, char** args, size_t num_args) {
     int rs = translate_reg(args[1]);
     int rt = translate_reg(args[2]);
     
-
+    if(rd || rs || rt) return -1;
     uint32_t instruction = 0;
+    instruction += (rs<<21);
+    instruction += (rt<<16);
+    instruction += (rd<<11);
+    
+
     write_inst_hex(output, instruction);
     return 0;
 }
