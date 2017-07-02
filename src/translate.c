@@ -198,19 +198,28 @@ int write_jr(uint8_t funct, FILE* output, char** args, size_t num_args) {
     }
     
     int rs = translate_reg(args[0]);
+    if(rs) return -1;
+    
 
     uint32_t instruction = 0;
+    instruction += (rs<<21);
+    instruction += funct;
     write_inst_hex(output, instruction);
     return 0;
 }
 
 int write_addiu(uint8_t opcode, FILE* output, char** args, size_t num_args) {
     // Perhaps perform some error checking?
+    if (!output || !args || num_args != 3) {
+      return -1;
+    }
     
     long int imm;
     int rt = translate_reg(args[0]);
     int rs = translate_reg(args[1]);
     int err = translate_num(&imm, args[2], INT16_MIN, INT16_MAX);
+    if(rt||rs||err) return -1;
+    
 
 
     uint32_t instruction = 0;
