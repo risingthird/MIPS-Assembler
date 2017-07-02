@@ -44,6 +44,34 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
     if (strcmp(name, "li") == 0) {
         /* YOUR CODE HERE */
         if(!output || !name || !args || num_args != 2){return 0;}
+        long int immediate;
+        int temp = ranslate_num(&immediate,args[1],INT32_MIN,UINT32_MAX);
+        if(translate_reg(args[0]) || temp){
+            return0;
+        }
+        if(immediate>=INT32_MIN && immediate<=INT32_MAX){
+            char* name1 = "addiu";
+            char** args1 = malloc(3*sizeof(char*));
+            args1[0] = args[0]; //  addiu rt rs imm
+            args1[1] = "$0";
+            args1[2] = args[1];
+            write_inst_string(output, name1, args1, 3); // helper function to write instructions
+            free(args1);
+            return 1;
+        }
+        // use lui ori pair
+        char* name2 ="lui";
+        char** args2 = malloc(2*sizeof(char*));
+        args2[0] = "$t1";
+        long int temp1 = imm>>16;
+        temp1 = temp1 & 0xFFFF; // take the first 16 bits;
+        char copy[100];
+        sprintf(copy,"%ld",temp1); // transfer long int into string
+        args2[1] = copy;
+        
+        char* name3 = "ori";
+        char** args3 = malloc(2*siezof(char*)); // ori $r1 $r1 imme
+        
         
         
     } else if (strcmp(name, "push") == 0) {
