@@ -267,18 +267,24 @@ int write_mult_div(uint8_t funct, FILE* output, char** args, size_t num_args) {
 	}
 			    
 	uint32_t instruction = 0;
+    instruction += (rs<<21);
+    instruction += (rt<<16);
+    instruction += funct;
 	write_inst_hex(output, instruction);
 	return 0;
 }
 
 int write_mfhi_mflo(uint8_t funct, FILE* output, char** args, size_t num_args) {
     	// Perhaps perform some error checking?
+    if(!output || !args || num_args!=1) return -1;
 	int rd = translate_reg(args[0]);
 	if (rd < 0) {
 		return -1;
 	}
 
 	uint32_t instruction = 0;
+    instruction += (rd<<11);
+    instruction += funct;
 	write_inst_hex(output, instruction);
 	return 0;
 }
