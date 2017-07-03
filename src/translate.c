@@ -62,7 +62,7 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         // use lui ori pair
         char* name2 ="lui";
         char** args2 = malloc(2*sizeof(char*));
-        args2[0] = "$t1";
+        args2[0] = "$at";
         long int temp1 = imm>>16;
         temp1 = temp1 & 0xFFFF; // take the first 16 bits;
         char copy[100];
@@ -72,7 +72,7 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         char* name3 = "ori";
         char** args3 = malloc(2*siezof(char*)); // ori $r1 $r1 imme
         args3[0] = args[0];
-        args3[1] = "$t1";
+        args3[1] = "$at";
         long int temp2 = ((imm<<16)>>16) & 0xffff;
         char copy2[100];
         sprintf(copy2,"%ld",temp2);
@@ -85,16 +85,105 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         
     } else if (strcmp(name, "push") == 0) {
         /* YOUR CODE HERE */
-        return 0;  
+        if(!output || !name || !args || num_args != 1){return 0;}
+        char* first_name = "addiu";
+        char** first_args = malloc(3*sizeof(char*));
+        first_args[0] = "$sp";
+        first_args[1] = "$sp";
+        long int temp = -4;
+        char imm[100];
+        sprintf(imm,"%ld",temp);
+        first_args[2] = imm;
+        
+        char* second_name = "sw";
+        char** second_args = malloc(3*sizeof(char*));
+        second_args[0] = args[0];
+        second_args[1] = "$0";
+        second_args[2] = "$sp";
+        
+        write_inst_string(output,first_name,first_args,3);
+        write_inst_string(output,second_name,second_args,3);
+        
+        return 2; 
+        
     } else if (strcmp(name, "pop") == 0) {
         /* YOUR CODE HERE */
-        return 0;  
+        if(!output || !name || !args || num_args != 1){return 0;}
+        char* first_name = "lw";
+        char** first_args = malloc(3*sizeof(char*));
+        first_args[0] = args[0];
+        first_args[1] = "$0";
+        first_args[2] = "$sp";
+        
+        char* second_name = "addiu";
+        char** second_args = malloc(3*sizeof(char*));
+        second_args[0] = "$sp";
+        second_args[1] = "$sp";
+        long int temp = 4;
+        char imm[100];
+        sprintf(imm,"%ld",temp);
+        second_args[2] = imm;
+      
+        write_inst_string(output,first_name,first_args,3);
+        write_inst_string(output,second_name,second_args,3);
+        
+        return 2;  
+        
     } else if (strcmp(name, "mod") == 0) {
         /* YOUR CODE HERE */
-        return 0;  
+        if(!output || !name || !args || num_args != 3){return 0;}
+        char* first_name = "div";
+        char** first_args = malloc(2*sizeof(char*));
+        first_args[0] = args[1];
+        first_args[1] = args[2];
+        
+        char* second_name = "mfhi";
+        char** second_args = malloc(sizeof(char*));
+        second_args[0] = args[0];
+        
+        write_inst_string(output,first_name,first_args,2);
+        write_inst_string(output,second_name,second_args,1);
+        
+        return 2;  
     } else if (strcmp(name, "subu") == 0) {
         /* YOUR CODE HERE */
-        return 0;
+        if(!output || !name || !args || num_args != 3){return 0;}
+        char* first_name = "addiu";
+        char** first_args = malloc(3*sizeof(char*));
+        first_args[0] = "$at";
+        first_args[1] = "$0";
+        long int temp = -1;
+        char imm[100];
+        sprintf(imm,"%ld",temp);
+        first_args[2] = imm;
+        
+        char* second_name = "xor";
+        char** second_args = malloc(3*sizeof(char*));
+        second_args[0] = "$at";
+        second_args[1] = "$at";
+        second_args[2] = args[2];
+        
+        char* third_name = "addiu";
+        char** third_args = malloc(3*sizeof(char*));
+        third_args[0] = "$at";
+        third_args[1] = "$at";
+        long int temp = 1;
+        char imm1[100];
+        sprintf(imm1,"%ld",temp);
+        third_args[2] = imm1;
+        
+        char* fouth_name = "addu";
+        char** fouth_args = malloc(3*sizeof(char*));
+        fouth_args[0] = args[0];
+        fouth_args[1] = args[1];
+        fouth_args[2] = args[2];
+        
+        write_inst_string(output,first_name,first_args,3);
+        write_inst_string(output,second_name,second_args,3);
+        write_inst_string(output,third_name,third_args,3);
+        write_inst_string(output,fouth_name,fouth_args,3);
+        
+        return 4;
     }
     write_inst_string(output, name, args, num_args);
     return 1;
@@ -126,6 +215,7 @@ int translate_inst(FILE* output, const char* name, char** args, size_t num_args,
     SymbolTable* symtbl, SymbolTable* reltbl) {
     if (strcmp(name, "addu") == 0)       return write_rtype      (0x21, output, args, num_args);
     else if (strcmp(name, "or") == 0)    return write_rtype      (0x25, output, args, num_args);
+    else if (strcmp(name, "xor") == 0)   return write_rtype      (0x26, output, args, num_args);
     else if (strcmp(name, "slt") == 0)   return write_rtype      (0x2a, output, args, num_args);
     else if (strcmp(name, "sltu") == 0)  return write_rtype      (0x2b, output, args, num_args);
     else if (strcmp(name, "sll") == 0)   return write_shift      (0x00, output, args, num_args);
