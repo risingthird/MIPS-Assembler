@@ -179,40 +179,47 @@ int pass_one(FILE* input, FILE* output, SymbolTable* symtbl) {
    the document, and at the end, return -1. Return 0 if no errors were encountered. */
 int pass_two(FILE *input, FILE* output, SymbolTable* symtbl, SymbolTable* reltbl) {
     /* YOUR CODE HERE */
-
-    /* Since we pass this buffer to strtok(), the characters in this buffer will
-       GET CLOBBERED. */
     char buf[BUF_SIZE];
     /* Store input line number / byte offset. When should each be incremented? */
     uint32_t input_line = 0; 
     uint32_t byte_offset = 0;
     int ret_code = 0;
-
+    char store[10];
+	
     /* First, read the next line into a buffer. */
     while (fgets(buf, BUF_SIZE, input)) {
         input_line++;
-
         /* Next, use strtok() to scan for next character.*/
         char* name = strtok(buf, IGNORE_CHARS);
-
-        // Error checking?
-
+		if (name!=NULL){
+			strcpy(store,name);
+			
         /* Parse for instruction arguments. You should use strtok() to tokenize
            the rest of the line. Extra arguments should be filtered out in pass_one(),
            so you don't need to worry about that here. */
-        char* args[MAX_ARGS];
-        int num_args = 0;
+			char* args[MAX_ARGS];
+            int num_args = 0;
+            name = strtok(NULL, IGNORE_CHARS);
+            while (name!=NULL && num_args <= 2) {
+                args[num_args] = name;
+                name = strtok(NULL, IGNORE_CHARS);
+                num_args++;
+            }
+		}
 
 
         /* Use translate_inst() to translate the instruction and write to output file.
            If an error occurs, the instruction will not be written and you should call
            raise_inst_error(). */
-
-        int num = 0;
+		if (translate_inst(output, store, args, num_args, byte_offset, symtbl, reltbl) == -1) {
+                t=-1;
+                raise_inst_error(input_line,store,args,num_args);
+        }
+        byte_offset = byte_offset + 4;
+        input_line++;
     }
     /* Repeat until no more characters are left */
-
-    return -1;
+    return t;
 }
 
 /*******************************
