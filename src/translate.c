@@ -219,7 +219,6 @@ int translate_inst(FILE* output, const char* name, char** args, size_t num_args,
     else if (strcmp(name, "slt") == 0)   return write_rtype      (0x2a, output, args, num_args);
     else if (strcmp(name, "sltu") == 0)  return write_rtype      (0x2b, output, args, num_args);
     else if (strcmp(name, "sll") == 0)   return write_shift      (0x00, output, args, num_args);
-    else if (strcmp(name, "srl") == 0)   return write_shift      (0x02, output, args, num_args);
     /* YOUR CODE HERE */
     else if (strcmp(name,"lb") == 0)     return write_mem        (0x20, output, args, num_args);
     else if (strcmp(name,"lbu") == 0)    return write_mem        (0x24, output, args, num_args);
