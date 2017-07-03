@@ -258,7 +258,7 @@ int write_ori(uint8_t opcode, FILE* output, char** args, size_t num_args) {
 
 int write_mult_div(uint8_t funct, FILE* output, char** args, size_t num_args) {
     	// Perhaps perform some error checking?
-
+    if(!output || !args || num_args!=2) return -1;
 	int rs = translate_reg(args[0]);
 	int rt = translate_reg(args[1]);
 		        
