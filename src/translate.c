@@ -104,6 +104,8 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         write_inst_string(output,first_name,first_args,3);
         write_inst_string(output,second_name,second_args,3);
         
+        free(first_args);
+        free(second_args);
         return 2; 
         
     } else if (strcmp(name, "pop") == 0) {
@@ -127,6 +129,9 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         write_inst_string(output,first_name,first_args,3);
         write_inst_string(output,second_name,second_args,3);
         
+        free(first_args);
+        free(second_args);
+        
         return 2;  
         
     } else if (strcmp(name, "mod") == 0) {
@@ -143,6 +148,9 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         
         write_inst_string(output,first_name,first_args,2);
         write_inst_string(output,second_name,second_args,1);
+        
+        free(first_args);
+        free(second_args);
         
         return 2;  
     } else if (strcmp(name, "subu") == 0) {
@@ -182,6 +190,11 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         write_inst_string(output,second_name,second_args,3);
         write_inst_string(output,third_name,third_args,3);
         write_inst_string(output,fouth_name,fouth_args,3);
+        
+        free(first_args);
+        free(second_args);
+        free(third_args);
+        free(fouth_args);
         
         return 4;
     }
