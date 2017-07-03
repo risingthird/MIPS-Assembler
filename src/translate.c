@@ -130,6 +130,14 @@ int translate_inst(FILE* output, const char* name, char** args, size_t num_args,
     else if (strcmp(name, "sltu") == 0)  return write_rtype (0x2b, output, args, num_args);
     else if (strcmp(name, "sll") == 0)   return write_shift (0x00, output, args, num_args);
     /* YOUR CODE HERE */
+    else if (strcmp(name,"lb") == 0)     return write_mem   (0x20, output, args, num_args);
+    else if (strcmp(name,"lbu") == 0)    return write_mem   (0x24, output, args, num_args);
+    else if (strcmp(name,"lbu") == 0)    return write_mem   (0x24, output, args, num_args);
+    else if (strcmp(name, "sb") == 0)    return write_mem   (0x28, output, args, num_args); 
+    else if (strcmp(name, "lw") == 0)    return write_mem   (0x23, output, args, num_args);
+    else if (strcmp(name, "sw") == 0)    return write_mem   (0x2b, output, args, num_args);
+    
+    
     else                                 return -1;
 }
 
@@ -312,13 +320,19 @@ int write_lui(uint8_t opcode, FILE* output, char** args, size_t num_args) {
 
 int write_mem(uint8_t opcode, FILE* output, char** args, size_t num_args) {
     // Perhaps perform some error checking?
-    
+    if(!output || !args || num_args!=3)
     long int imm;
     int rt = translate_reg(args[0]);
     int rs = translate_reg(args[2]);
     int err = translate_num(&imm, args[1], INT16_MIN, INT16_MAX);
+    if(rt||rs||err) return -1;
+    
+    imm = imm & 0x0000ffff;
 
     uint32_t instruction =0;
+    instruction += (rs<<21);
+    instruction += (rt<<16);
+    instruction += opcode;
     write_inst_hex(output, instruction);
     return 0;
 }
