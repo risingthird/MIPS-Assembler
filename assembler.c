@@ -141,7 +141,8 @@ int pass_one(FILE* input, FILE* output, SymbolTable* symtbl) {
     char buf[BUF_SIZE];
     uint32_t input_line = 0, byte_offset = 0;
     int ret_code = 0;
-
+    int errorCheck=0;
+    int t=0; //arg-2
 
      // Read lines and add to instructions
     while(fgets(buf, BUF_SIZE, input)) {
@@ -156,7 +157,37 @@ int pass_one(FILE* input, FILE* output, SymbolTable* symtbl) {
         // Scan for arguments
         char* args[MAX_ARGS];
         int num_args = 0;
-
+        
+        char store[10];
+        
+        if (token !=NULL){
+            int labelCheck=add_if_label(input_line,ptr,byte_offset,symtbl);
+            if (labelCheck==0) { //not a label
+                strcpy(store, token);
+                token = strtok(NULL, IGNORE_CHARS);
+                while (token!=NULL) {
+                    if (num_args==3){
+                        raise_extra_arg_error(input_line,ptr);
+                        errorCheck=-1;
+                        t=1;
+                        break;
+                    }else {
+                        args[num_args]=token;
+                        token= strtok(NULL,IGNORE_CHARS);
+                        num_args++;
+                    }
+                }
+                if (t==0){
+                
+                }
+            }
+            if (labelCheck==-1){
+            
+            }
+            if (lebelCheck==1){
+            
+            }
+        }
     	// Checks to see if there were any errors when writing instructions
         unsigned int lines_written = write_pass_one(output, token, args, num_args);
         if (lines_written == 0) {
@@ -165,7 +196,7 @@ int pass_one(FILE* input, FILE* output, SymbolTable* symtbl) {
         } 
         byte_offset += lines_written * 4;
     }       
-    return -1;
+    return errorCheck;
 }
 
 /* Reads an intermediate file and translates it into machine code. You may assume:
@@ -200,7 +231,7 @@ int pass_two(FILE *input, FILE* output, SymbolTable* symtbl, SymbolTable* reltbl
 			char* args[MAX_ARGS];
             int num_args = 0;
             name = strtok(NULL, IGNORE_CHARS);
-            while (name!=NULL && num_args <= 2) {
+            while (name!=NULL && num_args<3) {
                 args[num_args] = name;
                 name = strtok(NULL, IGNORE_CHARS);
                 num_args++;
