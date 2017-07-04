@@ -178,16 +178,46 @@ int pass_one(FILE* input, FILE* output, SymbolTable* symtbl) {
                     }
                 }
                 if (t==0){
-                
+                    int temp=write_pass_one(output, store, args, num_args);
+                    if (temp==0){
+                        raise_inst_error(input_line,name,args,num_args);
+                        errorcheck=-1;
+                    } else{
+                        byte_offset+=4*cnt;
+                    }
                 }
             }
             if (labelCheck==-1){
-            
+                errorCheck=-1;
             }
             if (lebelCheck==1){
-            
+                token=strtok(NULL, IGNORE_CHARS);
+                if (token!= NULL) {
+                    strcpy(store, token);
+                    token=strtok(NULL, IGNORE_CHARS);
+                    while (token!= NULL) {
+                        if (num_args==3){
+                            raise_extra_arg_error(input_line,token);
+                            errorCheck= -1;
+                            t=1;
+                            break;
+                        }else{
+                            args[num_args]=token;
+                            token=strtok(NULL, IGNORE_CHARS);
+                            num_args++;
+                        }
+                    }
+                    if (t==0){
+                        int temp=write_pass_one(output, store, args, num_args);
+                        if (temp==0){
+                            raise_inst_error(input_line,name,args,num_args);
+                            errorcheck=-1;
+                        } else{
+                            byte_offset+=4*cnt;
+                        }
+                    }
+                }
             }
-        }
     	// Checks to see if there were any errors when writing instructions
         unsigned int lines_written = write_pass_one(output, token, args, num_args);
         if (lines_written == 0) {
