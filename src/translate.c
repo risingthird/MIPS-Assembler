@@ -44,7 +44,7 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
     if (strcmp(name, "li") == 0) {
         /* YOUR CODE HERE */
         if(!output || !name || !args || num_args != 2){return 0;}
-        long int immediate;
+        long int imm;
         int temp = ranslate_num(&immediate,args[1],INT32_MIN,UINT32_MAX);
         if(translate_reg(args[0]) || temp){
             return0;
