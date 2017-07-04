@@ -97,7 +97,7 @@ int add_to_table(SymbolTable* table, const char* name, uint32_t addr) {
     /* YOUR CODE HERE */
     if(addr%4) {addr_alignment_incorrect();return -1;}  // test whether the addr is word-aligned
     if(SYMTBL_UNIQUE_NAME && (get_addr_for_symbol(table, name)!=-1)){  // test whether name exists
-        name_already_exists();
+        name_already_exists(name);
         return -1;
     }
     if(table->len == table->cap){
@@ -120,7 +120,7 @@ int64_t get_addr_for_symbol(SymbolTable* table, const char* name) {
         int size = table->len;
         while(i<size){
             if(!strcmp(table->tbl[i].name, name)){    // table->tbl[i] is similar with *((table->tbl)+i)
-                return talbe->tbl[i].addr;
+                return table->tbl[i].addr;
             }
             i++;
         }
