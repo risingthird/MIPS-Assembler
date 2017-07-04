@@ -47,7 +47,7 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         long int imm;
         int temp = ranslate_num(&immediate,args[1],INT32_MIN,UINT32_MAX);
         if(translate_reg(args[0]) || temp){
-            return0;
+            return 0;
         }
         if(immediate>=INT32_MIN && immediate<=INT32_MAX){
             char* name1 = "addiu";
