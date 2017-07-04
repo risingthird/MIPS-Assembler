@@ -45,11 +45,11 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         /* YOUR CODE HERE */
         if(!output || !name || !args || num_args != 2){return 0;}
         long int imm;
-        int temp = ranslate_num(&immediate,args[1],INT32_MIN,UINT32_MAX);
+        int temp = translate_num(&imm,args[1],INT32_MIN,UINT32_MAX);
         if(translate_reg(args[0]) || temp){
             return 0;
         }
-        if(immediate>=INT32_MIN && immediate<=INT32_MAX){
+        if(imm>=INT32_MIN && imm<=INT32_MAX){
             char* name1 = "addiu";
             char** args1 = malloc(3*sizeof(char*));
             args1[0] = args[0]; //  addiu rt rs imm
@@ -175,9 +175,9 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         char** third_args = malloc(3*sizeof(char*));
         third_args[0] = "$at";
         third_args[1] = "$at";
-        long int temp = 1;
+        long int temp1 = 1;
         char imm1[100];
-        sprintf(imm1,"%ld",temp);
+        sprintf(imm1,"%ld",temp1);
         third_args[2] = imm1;
         
         char* fouth_name = "addu";
