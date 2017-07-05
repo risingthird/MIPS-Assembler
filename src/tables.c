@@ -61,8 +61,8 @@ SymbolTable* create_table(int mode) {
 /* Frees the given SymbolTable and all associated memory. */
 void free_table(SymbolTable* table) {
     /* YOUR CODE HERE */
-    for (int i = 0; i < table->len; i++) {  // names are allocated in the create_copy function, so also need to be freed
-      free(table->tbl[i].name);
+    for (int i = table->len; i > 0; i--) {  // names are allocated in the create_copy function, so also need to be freed
+      free(table->tbl[i-1].name);
     }
     free(table->tbl);
     free(table);
