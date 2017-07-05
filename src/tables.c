@@ -47,11 +47,11 @@ SymbolTable* create_table(int mode) {
     /* YOUR CODE HERE */
     SymbolTable* newTable = malloc(sizeof(SymbolTable));
     if(!newTable) allocation_failed();
-    newTable->tbl = malloc(sizeof(Symbol)*INITIAL_SIZE);
+    newTable->tbl = malloc(sizeof(Symbol)*((int)INITIAL_SIZE));
     // set attributes in TABLE
-    if(!newTable->tbl) {free(newTable);allocation_failed();}
+    if(!(newTable->tbl)) {free(newTable);allocation_failed();}
     newTable->len=0;
-    newTable->cap=INITIAL_SIZE;
+    newTable->cap=(int) INITIAL_SIZE;
     newTable->mode=mode;
     
     return newTable;
