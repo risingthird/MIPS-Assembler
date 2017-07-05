@@ -104,11 +104,11 @@ int add_to_table(SymbolTable* table, const char* name, uint32_t addr) {
     if(table->len == table->cap){
         table->tbl = realloc(table->tbl,(table->cap)*SCALING_FACTOR*sizeof(Symbol));
         if(!table->tbl) allocation_failed();
+        table->cap = (table->cap) * SCALING_FACTOR;
     }
     table->tbl[table->len].name = create_copy_of_str(name);  // table is 0-indexed
     table->tbl[table->len].addr = addr;
     table->len = (table->len) + 1;
-    table->cap = (table->cap) * SCALING_FACTOR;
     return 0;
 }
 
