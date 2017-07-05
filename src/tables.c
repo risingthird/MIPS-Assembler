@@ -106,8 +106,8 @@ int add_to_table(SymbolTable* table, const char* name, uint32_t addr) {
     }
     table->tbl[table->len].name = create_copy_of_str(name);  // table is 0-indexed
     table->tbl[table->len].addr = addr;
-    table->len = table->len + 1;
-    table->cap = table->cap * SCALING_FACTOR;
+    table->len = (table->len) + 1;
+    table->cap = (table->cap) * SCALING_FACTOR;
     return 0;
 }
 
