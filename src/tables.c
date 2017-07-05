@@ -51,7 +51,7 @@ SymbolTable* create_table(int mode) {
     // set attributes in TABLE
     if(!(newTable->tbl)) {free(newTable);allocation_failed();}
     newTable->len=0;
-    newTable->cap=(int) INITIAL_SIZE;
+    newTable->cap=INITIAL_SIZE;
     newTable->mode=mode;
     
     return newTable;
