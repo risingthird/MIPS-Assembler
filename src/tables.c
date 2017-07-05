@@ -96,7 +96,7 @@ static char* create_copy_of_str(const char* str) {
 int add_to_table(SymbolTable* table, const char* name, uint32_t addr) {
     /* YOUR CODE HERE */
     if(addr%4) {addr_alignment_incorrect();return -1;}  // test whether the addr is word-aligned
-    if(SYMTBL_UNIQUE_NAME && (get_addr_for_symbol(table, name)!=-1)){  // test whether name exists
+    if(table->mode && (get_addr_for_symbol(table, name)!=-1)){  // test whether name exists
         name_already_exists(name);
         return -1;
     }
