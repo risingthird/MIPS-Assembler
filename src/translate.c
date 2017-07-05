@@ -70,7 +70,7 @@ unsigned write_pass_one(FILE* output, const char* name, char** args, int num_arg
         args2[1] = copy;
         
         char* name3 = "ori";
-        char** args3 = malloc(2*siezof(char*)); // ori $r1 $r1 imme
+        char** args3 = malloc(2*sizeof(char*)); // ori $r1 $r1 imme
         args3[0] = args[0];
         args3[1] = "$at";
         long int temp2 = ((imm<<16)>>16) & 0xffff;
@@ -432,7 +432,7 @@ int write_lui(uint8_t opcode, FILE* output, char** args, size_t num_args) {
 
 int write_mem(uint8_t opcode, FILE* output, char** args, size_t num_args) {
     // Perhaps perform some error checking?
-    if(!output || !args || num_args!=3)
+    if(!output || !args || num_args!=3) return -1;
     long int imm;
     int rt = translate_reg(args[0]);
     int rs = translate_reg(args[2]);
